@@ -2,25 +2,27 @@ const express = require('express');
 const router = express.Router();
 // const UserModel= require("../models/userModel.js")
 const UserController= require("../controllers/userController")
-const BookController= require("../controllers/bookController")
-
+const productController= require("../controllers/productController")
+const orederController= require("../controllers/orderController")
+const middleWare= require("../middlerware/middlerWare")
 router.get("/test-me", function (req, res) {
     res.send("My first ever api!")
 })
 
-router.post("/createUser", UserController.createUser  )
-
+// router.post("/createUser",middleWare.falana, UserController.createUser)
+ router.post("/createUser", UserController.createUser)
 router.get("/getUsersData", UserController.getUsersData)
 
-router.post("/createBook", BookController.createBook  )
+router.post("/createProduct", productController.createProduct)
 
-router.get("/getBooksData", BookController.getBooksData)
-
-router.post("/updateBooks", BookController.updateBooks)
-router.post("/deleteBooks", BookController.deleteBooks)
+router.get("/getBooksData", productController.getProductsData)
+/ router.post("/createOrder",orederController.createOrder)
+// router.post("/createOrder", middleWare.falana,orederController.createOrder)
+// router.post("/deleteBooks", productController.deleteBooks)
 
 //MOMENT JS
 const moment = require('moment');
+const middlewareWrapper = require('cors');
 router.get("/dateManipulations", function (req, res) {
     
     // const today = moment();

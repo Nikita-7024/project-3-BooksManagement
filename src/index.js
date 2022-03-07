@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-mongoose.connect("mongodb+srv://functionup-cohort:G0Loxqc9wFEGyEeJ@cluster0.rzotr.mongodb.net/Pritesh8769811-DB?retryWrites=true&w=majority", {
+mongoose.connect("mongodb+srv://functionup-cohort:G0Loxqc9wFEGyEeJ@cluster0.rzotr.mongodb.net/Shubham-DB?retryWrites=true&w=majority", {
     useNewUrlParser: true
 })
 .then( () => console.log("MongoDb is connected"))
@@ -16,7 +16,7 @@ mongoose.connect("mongodb+srv://functionup-cohort:G0Loxqc9wFEGyEeJ@cluster0.rzot
 
 let globalMiddleware = function(req, res, next){
     let currentDate = new Date()
-    console.log('Before adding custom header '+JSON.stringify(req.headers))
+    // console.log('Before adding custom header '+JSON.stringify(req.headers))
     let contentTypeHeader = req.headers["content-type"]
     let name = "functionup"
     req.headers.organisation = name
@@ -42,8 +42,24 @@ let globalMiddleware = function(req, res, next){
     next()
 }
 
-app.use(globalMiddleware)
-app.use('/', route)
+// app.use(globalMiddleware)
+// app.use('/', route)
+
+
+let middleware=function(req,res,next){
+    let isfreeappuser=req.headers["isfreeappuser"]
+    console.log(isfreeappuser)
+    if(isfreeappuser !== undefined){
+        req.body.isfreeappuser=isfreeappuser
+        next()
+    }
+    else{
+        res.send("error")
+    }
+    }
+    app.use(middleware)
+    app.use('/',route)
+
 
 
 app.listen(process.env.PORT || 3000, function () {

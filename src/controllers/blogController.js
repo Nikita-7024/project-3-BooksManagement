@@ -1,11 +1,48 @@
 const BlogModel= require("../models/blogModel")
+const AutherModel=require("../models/autherModel")
+let jwt=require('jsonwebtoken')
 
 const createblog= async function (req, res) {
-    let data= req.body
+  try{  let data= req.body
     let savedData= await BlogModel.create(data)
     console.log(req.newAtribute)
-    res.send({msg: savedData})
+    res.status(200).send({msg: savedData})
 }
+
+catch(err){
+    res.status(500).send({statue:false , msg:err.message})
+}
+
+
+}
+
+const loginAuther = async function (req, res) {
+    try{
+     let autherName = req.body.emailId;
+     let password = req.body.password;
+   
+     
+     let auther = await AutherModel.findOne({ emailId: autherName, password: password });
+     if (!auther)
+       return res.status(400).send({
+         status: false,
+         msg: "auther name or the password is not corerct",
+       });
+     let token = jwt.sign(
+       { autherID: auther._id.toString() }, 'shubham-thorium'
+     );
+     res.setHeader("x-api-key", token);
+     res.send({ status: true, data: token });
+   } 
+   catch (err) {
+     console.log("This is the error :", err.message)
+     res.status(500).send({ msg: "Error", error: err.message })
+   }
+   }
+
+
+
+
 
 let getBlog = async function (req, res) {
     try{
@@ -84,6 +121,7 @@ const deletebyQuery = async function(req,res){
 
 
 module.exports.createblog= createblog
+module.exports.loginAuther=loginAuther
 module.exports.getBlog= getBlog
 module.exports.updateblog= updateblog
 module.exports.deletebyId= deletebyId

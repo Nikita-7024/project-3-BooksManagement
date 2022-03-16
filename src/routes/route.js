@@ -5,16 +5,21 @@ const BlogController= require("../controllers/blogController")
 
 const AutherController= require("../controllers/AutherController")
 
+const middleware=require("../middleware/authh")
+
+// Creat auther......
 router.post("/auther",AutherController.createauther)
-
-router.post("/blog",BlogController.createblog)
-
-router.get("/getblogg",BlogController.getBlog)
-
-router.put("/updateblogg/:blogID",BlogController.updateblog)
-
-router.delete("/deleteblogg/:blogID",BlogController.deletebyId)
-
-router.delete("/deletequery",BlogController.deletebyQuery)
+//Login auther....
+router.post("/login",BlogController.loginAuther)
+// Creat blog.......
+router.post("/blog",middleware.authenticate,BlogController.createblog)
+//Getblog.....
+router.get("/getblogg",middleware.authenticate,BlogController.getBlog)
+//Updateblog.....
+router.put("/updateblogg/:blogID",middleware.authenticate,middleware.authorise,BlogController.updateblog)
+//Delete blog by ID......
+router.delete("/deleteblogg/:blogID",middleware.authenticate,middleware.authorise,BlogController.deletebyId)
+//Delete blog by Query.......
+router.delete("/deletequery",middleware.authenticate,BlogController.deletebyQuery)
 
 module.exports = router;

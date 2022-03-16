@@ -6,7 +6,7 @@ const createblog = async function (req, res) {
   try {
     let data = req.body
     let savedData = await BlogModel.create(data)
-  
+
     return res.status(200).send({ msg: savedData })
   }
 
@@ -31,7 +31,7 @@ const loginAuther = async function (req, res) {
       });
     let token = jwt.sign(
       { autherID: auther._id.toString() }, 'shubham-thorium'
-);
+    );
     res.setHeader("x-api-key", token);
     return res.status(200).send({ status: true, data: token });
   }
@@ -73,10 +73,10 @@ let getBlog = async function (req, res) {
 const updateblog = async function (req, res) {
   try {
     let updateblog = req.params.blogID
-    let updateAuth= await BlogModel.findById(updateblog)
+    let updateAuth = await BlogModel.findById(updateblog)
 
 
-    if(req.user != updateAuth.autherID){
+    if (req.user != updateAuth.autherID) {
       return res.status(401).send({ msg: "You are not authorised" })
     }
     console.log(updateAuth)
@@ -98,8 +98,8 @@ const deletebyId = async function (req, res) {
     let blogId = req.params.blogID
     const validId = await BlogModel.findById(blogId)
 
-    if(req.user != validId.autherID ){
-      return res.status(401).send({status: false, msg: "You are not authoorised"})
+    if (req.user != validId.autherID) {
+      return res.status(401).send({ status: false, msg: "You are not authoorised" })
     }
     console.log(validId)
     if (!validId) {
@@ -120,8 +120,8 @@ const deletebyQuery = async function (req, res) {
   try {
     let input = req.query
 
-    if(req.user != input.autherID){
-      return res.status(401).send({status:false, msg: "you are not authorised"})
+    if (req.user != input.autherID) {
+      return res.status(401).send({ status: false, msg: "you are not authorised" })
     }
     console.log(input)
     if (Object.keys(input).length == 0)

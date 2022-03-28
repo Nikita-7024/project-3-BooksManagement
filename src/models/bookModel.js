@@ -52,7 +52,7 @@ const bookSchema = new mongoose.Schema({
     releasedAt: {
         type: Date,
         required: true,
-        match: [/^\d{2}-\d{2}-\d{4}$/, 'Please fill valid Date']
+        match: [/^\d{4}-\d{2}-\d{2}$/, 'Please fill valid Date']
     }
 
 }, { timestamps: true });

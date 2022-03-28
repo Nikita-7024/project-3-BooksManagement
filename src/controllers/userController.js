@@ -11,9 +11,15 @@ const isValid = function (value) {
 const createUser = async function (req, res) {
 
     try {
+        let x = req.query
+        if (Object.keys(x).length > 0) {
+            return res.status(400).send({ status: false, message: "please don't provide params " })
+        }
+
         let data = req.body
 
         let { title, name, phone, email, password, address } = data  //destructuring method
+
 
         if (Object.keys(data).length == 0) {
             return res.status(400).send({ status: false, msg: "BAD REQUEST" })
@@ -30,20 +36,10 @@ const createUser = async function (req, res) {
 
         }
         if (!isValid(address)) {
-            if (!(address.street)) {
-                return res.status(400).send({ status: false, msg: "street is required" })
-            }
-            if (!(address.city)) {
-                return res.status(400).send({ status: false, msg: "city is required" })
-            }
-            if (!(address.pincode)) {
-                return res.status(400).send({ status: false, msg: "pincode is required" })
-            } else {
-
-                return res.status(400).send({ status: false, msg: "address is required" })
-            }
-
+            return res.status(400).send({ status: false, msg: "address is required" })
         }
+
+
         // validate phone------------------  
         if (!isValid(phone)) {
             return res.status(400).send({ status: false, msg: "phone is required" })
@@ -78,11 +74,7 @@ const createUser = async function (req, res) {
             return
         }
 
-        let isPasswordAlreadyUsed = await userModel.findOne({ password })
-        if (isPasswordAlreadyUsed) {
-            res.status(400).send({ status: false, msg: "this password is already used, please provide another password" })
-            return
-        }
+
         let isPhoneAlreadyUsed = await userModel.findOne({ phone })
         if (isPhoneAlreadyUsed) {
             return res.status(400).send({ status: false, msg: "phone is already used, please provide another phone number" })
@@ -118,11 +110,11 @@ const loginUser = async function (req, res) {
         if (!user)
             return res.status(400).send({
                 status: false,
-                msg: "auther name or the password is not corerct",
+                msg: "user name or the password is not corerct",
             });
 
         let token = jwt.sign(
-            { userID: user._id.toString() }, 'nikita singh'
+            { userID: user._id.toString() }, 'nikita singh', { expiresIn: "30ms" }
         );
         res.setHeader("x-api-key", token);
         return res.status(201).send({ status: true, msg: "success", data: token });

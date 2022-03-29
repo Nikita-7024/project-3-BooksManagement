@@ -3,6 +3,8 @@ const router = express.Router();
 
 const UserController= require("../controllers/userController")
 const BookController= require("../controllers/bookController")
+const ReviewController= require("../controllers/reviewController")
+
 
 
 
@@ -21,11 +23,19 @@ router.get("/book/get",BookController.getBook)
 
 
 // update Book by Id.....
-router.post("/update/books/:bookId",BookController.updateBook)
+router.put("/books/:bookId",BookController.updateBook)
 
 
 // delete book by id....
-router.delete("/delete/books/:bookId",BookController.deleteBookById )
+router.delete("/books/:bookId",BookController.deleteBookById )
+
+
+// get book by id.......
+router.get("/books/:bookId", BookController.getBooksById)
+
+
+// create review.....
+router.post("/books/:bookId/review", ReviewController.review)
 
 
 

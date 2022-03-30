@@ -38,8 +38,7 @@ const bookSchema = new mongoose.Schema({
     reviews: {
         type: Number,
         default: 0,
-        trim: true,
-        comment: "Holds number of reviews of this book "
+        trim: true
     },
     deletedAt: {
         type: Date,
@@ -52,7 +51,8 @@ const bookSchema = new mongoose.Schema({
     releasedAt: {
         type: Date,
         required: true,
-        match: [/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/, 'Please fill valid Date']
+        trim:true,
+        match: [/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/, 'Please fill valid Date']   //YYYY-MM-DD
     }
 
 }, { timestamps: true });

@@ -1,30 +1,47 @@
-let jwt = require('jsonwebtoken')
-const userModel = require("../models/userModel")
-const bookModel = require("../models/bookModel")
+const jwt = require("jsonwebtoken");
+const BookModel = require('../models/bookModel')
 
 
-let authenticate = function (req, res, next) {
-  //Token authentication......
-
+const authenticationUser = function (req, res, next) {
   try {
-    let xAuthToken = req.headers["x-api-key"]
+    let token = req.headers["x-api-key"];
+    if (!token) return res.status(400).send({ status: false, msg: "token must be present" });
 
-    let decodedToken = jwt.verify(xAuthToken, 'nikita singh')
-    if (!decodedToken) return res.status(401).send({ status: false, msg: "token is not valid" })
+    let decodedToken = jwt.verify(token, "nikita singh");          //verifying token with secret key
 
-    // Token authorization-----------------------------
+    if (!decodedToken)
+      return res.status(400).send({ status: false, msg: "token is invalid" });      //validating token value inside decodedToken
 
-    req.user = decodedToken.autherID
-  
-  next(); 
-  } 
-  catch (err) {
-    console.log("This is the error :", err.message)
-    return res.status(500).send({ msg: "Error", error: err.message })
+    next();
+
+  }
+  catch (error) {
+    res.send({ msg: error.message })
   }
 }
 
 
-  
+const authorisationUser = async function (req, res, next) {
+  try {
+    let token = req.headers["x-api-key"];
 
-module.exports.authenticate = authenticate;
+    const decodedToken = jwt.verify(token, "nikita singh");
+
+    let authorisedUser = decodedToken.userID;
+    let bookId = req.params.bookId;
+    let bookById = await BookModel.findOne({ _id: bookId, isDeleted: false }).select({ userId: 1 })
+
+    if (authorisedUser !== bookById.userId.toString()) {
+      return res.status(401).send({ status: false, msg: "You are not an authorized person to make these changes" })
+    }
+    next();
+  }
+  catch (error) {
+    return res.send({ msg: error.message })
+  }
+}
+
+
+module.exports.authenticationUser = authenticationUser;
+
+module.exports.authorisationUser = authorisationUser;

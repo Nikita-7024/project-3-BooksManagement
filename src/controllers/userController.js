@@ -2,11 +2,7 @@ const userModel = require('../models/userModel')
 let jwt = require('jsonwebtoken')
 
 // define valid function---------------------
-const isValid = function (value) {
-    if (typeof value === 'undefined' || value === null) return false
-    if (typeof value === 'string' && value.trim().length === 0) return false
-    return true;
-}
+const { isValid , isValidTitle} = require("../isValid/valid.js")
 
 const createUser = async function (req, res) {
 
@@ -31,6 +27,11 @@ const createUser = async function (req, res) {
             return res.status(400).send({ status: false, msg: "title is required" })
 
         }
+        if (!isValidTitle(title)) {
+            res.status(400).send({ status: false, message: 'title should be among Mr,Mrs,Miss' })
+            return
+        }
+
         if (!isValid(name)) {
             return res.status(400).send({ status: false, msg: "name is required" })
 
@@ -67,26 +68,21 @@ const createUser = async function (req, res) {
             return
         }
 
-
         let isemailAlreadyUsed = await userModel.findOne({ email })
         if (isemailAlreadyUsed) {
             res.status(400).send({ status: false, msg: "this email is already used, please provide another email" })
             return
         }
 
-
         let isPhoneAlreadyUsed = await userModel.findOne({ phone })
         if (isPhoneAlreadyUsed) {
             return res.status(400).send({ status: false, msg: "phone is already used, please provide another phone number" })
         }
 
-
-
         // create user-------------------
         let user = await userModel.create(data)
 
         res.status(201).send({ status: true, msg: "Success", data: user })
-
 
     } catch (error) {
         console.log(error)
@@ -94,7 +90,6 @@ const createUser = async function (req, res) {
     }
 
 }
-
 
 
 const loginUser = async function (req, res) {
@@ -105,7 +100,6 @@ const loginUser = async function (req, res) {
             return res.status(400).send({ status: false, msg: "email and password must be present" })
         }
 
-
         let user = await userModel.findOne({ email: userName, password: password });
         if (!user)
             return res.status(400).send({
@@ -114,7 +108,7 @@ const loginUser = async function (req, res) {
             });
 
         let token = jwt.sign(
-            { userID: user._id.toString() }, 'nikita singh', { expiresIn: "30ms" }
+            { userID: user._id.toString() }, 'nikita singh', { expiresIn: "3000 m" }
         );
         res.setHeader("x-api-key", token);
         return res.status(201).send({ status: true, msg: "success", data: token });
@@ -124,9 +118,6 @@ const loginUser = async function (req, res) {
         return res.status(500).send({ msg: "Error", error: err.message })
     }
 }
-
-
-
 
 
 module.exports.createUser = createUser

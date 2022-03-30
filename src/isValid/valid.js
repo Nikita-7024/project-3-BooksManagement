@@ -8,8 +8,11 @@ const isValidObjectId = function (objectId) {
     return mongoose.Types.ObjectId.isValid(objectId)
 }
 
+const isValidTitle = function (title) {
+    return ['Mr', 'Mrs', 'Miss'].indexOf(title) !== -1
+}
 
 
 
 
-module.exports={isValid,isValidObjectId}
+module.exports={isValid,isValidObjectId, isValidTitle}

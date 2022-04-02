@@ -108,7 +108,7 @@ const loginUser = async function (req, res) {
             });
 
         let token = jwt.sign(
-            { userID: user._id.toString() }, 'nikita singh', { expiresIn: "300000 m" }
+            { userID: user._id.toString() }, 'nikita singh', { expiresIn: "300 m" }
         );
         res.setHeader("x-api-key", token);
         return res.status(201).send({ status: true, msg: "success", data: token });

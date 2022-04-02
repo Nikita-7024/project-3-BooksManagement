@@ -20,9 +20,6 @@ const review = async function (req, res) {
 
         let { bookId, rating, reviewedBy } = data
 
-        // if (Object.keys(reviewedBy).length == 0)
-        //     return res.status(400).send({ status: false, msg: " ReviewedBy should be present" });
-
         if (Object.keys(data).length == 0)
             return res.status(400).send({ status: false, msg: "PLEASE FILL THE BODY" });
 
@@ -94,10 +91,6 @@ const updateReview = async function (req, res) {
             return res.status(400).send({ status: false, msg: " Rating must be greater than 1" });
         if (rating > 5)
             return res.status(400).send({ status: false, msg: " Rating must be less than 5" });
-
-        // if (!reviewedBy) {
-        //     return res.status(400).send({ status: false, msg: "reviewedBy is required " })
-        // }
 
 
         let updatedata = req.body;

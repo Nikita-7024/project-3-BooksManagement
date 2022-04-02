@@ -8,7 +8,7 @@ const Middleware=require("../middleware/auth")
 
 
 
-// USERAPI'S------------------------------------------------
+// ------------------******** USER API'S *********--------------------------
 
 // Creat user......
 router.post("/register",UserController.createUser)
@@ -16,7 +16,7 @@ router.post("/register",UserController.createUser)
 router.post("/login",UserController.loginUser)
 
 
-// BOOK API'S--------------------------------------------------------------------------
+// ------------------******* BOOK API'S ************---------------------------------
 
 // create Book.......
 router.post("/books", Middleware.authentication, BookController.createBook)
@@ -30,8 +30,7 @@ router.put("/books/:bookId", Middleware.authentication, BookController.updateBoo
 router.delete("/books/:bookId", Middleware.authentication, BookController.deleteBookById )
 
 
-
-// REVIEW API'S--------------------------------------------------------------
+// -------------------******* REVIEW API'S ********-----------------------------
 
 // create review.....
 router.post("/books/:bookId/review", ReviewController.review)

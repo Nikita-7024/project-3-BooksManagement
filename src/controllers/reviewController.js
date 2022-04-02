@@ -20,8 +20,8 @@ const review = async function (req, res) {
 
         let { bookId, rating, reviewedBy } = data
 
-        if (Object.keys(reviewedBy).length == 0)
-            return res.status(400).send({ status: false, msg: " ReviewedBy should be present" });
+        // if (Object.keys(reviewedBy).length == 0)
+        //     return res.status(400).send({ status: false, msg: " ReviewedBy should be present" });
 
         if (Object.keys(data).length == 0)
             return res.status(400).send({ status: false, msg: "PLEASE FILL THE BODY" });
@@ -30,7 +30,7 @@ const review = async function (req, res) {
 
         let bookidPresent = await BookModel.findById(bookId)
         if (!bookidPresent) {
-            return res.status(400).send({ status: false, msg: "Sorry This bookId Is Not Present" })
+            return res.status(404).send({ status: false, msg: "Sorry This bookId Is Not Present" })
         };
 
         // VALIDATING RATING:
@@ -66,6 +66,9 @@ const updateReview = async function (req, res) {
         if (Object.keys(body).length === 0) {
             return res.status(400).send({ status: false, msg: "Enter Data to update." })
         }
+        if (Object.keys(req.query).length > 0) {
+            return res.status(400).send({ status: false, message: "please don't provide value on params " })
+        }
         if (!isValidObjectId(bookId)) {
             res.status(400).send({ status: false, message: `${bookId} is not a valid book id` })
             return
@@ -92,15 +95,15 @@ const updateReview = async function (req, res) {
         if (rating > 5)
             return res.status(400).send({ status: false, msg: " Rating must be less than 5" });
 
-        if (!reviewedBy) {
-            return res.status(400).send({ status: false, msg: "reviewedBy is required " })
-        }
+        // if (!reviewedBy) {
+        //     return res.status(400).send({ status: false, msg: "reviewedBy is required " })
+        // }
 
 
         let updatedata = req.body;
         let updatedReview = await ReviewModel.findOneAndUpdate({ _id: reviewId }, { rating: updatedata.rating, reviewedBy: updatedata.reviewedBy, review: updatedata.review }, { new: true, upsert: true });
 
-        return res.status(201).send({ status: true, message: "Success", data: updatedReview })
+        return res.status(200).send({ status: true, message: "Success", data: updatedReview })
 
     } catch (err) {
         return res.status(500).send({ Error: err.message })
@@ -118,9 +121,13 @@ const deleteReviewById = async function (req, res) {
             res.status(400).send({ status: false, message: `${book} is not a valid book id` })
             return
         }
+        
         if (!isValidObjectId(review)) {
             res.status(400).send({ status: false, message: `${review} is not a valid review id` })
             return
+        }
+        if (Object.keys(req.query).length > 0) {
+            return res.status(400).send({ status: false, message: "please don't provide value on params " })
         }
 
         let validReview = await ReviewModel.findOneAndUpdate(

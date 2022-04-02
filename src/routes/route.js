@@ -19,15 +19,15 @@ router.post("/login",UserController.loginUser)
 // BOOK API'S--------------------------------------------------------------------------
 
 // create Book.......
-router.post("/books", Middleware.authenticationUser, BookController.createBook)
+router.post("/books", Middleware.authentication, BookController.createBook)
 // get book list.....
-router.get("/books",  BookController.getBook)
+router.get("/books",  Middleware.authentication, BookController.getBook)
 // get book by id.......
-router.get("/books/:bookId", Middleware.authenticationUser,BookController.getBooksById)
+router.get("/books/:bookId", Middleware.authentication,BookController.getBooksById)
 // update Book data by Id.....
-router.put("/books/:bookId",Middleware.authenticationUser, Middleware.authorisationUser,  BookController.updateBook)
+router.put("/books/:bookId", Middleware.authentication, BookController.updateBook)
 // delete book by id....
-router.delete("/books/:bookId", Middleware.authenticationUser ,Middleware.authorisationUser, BookController.deleteBookById )
+router.delete("/books/:bookId", Middleware.authentication, BookController.deleteBookById )
 
 
 

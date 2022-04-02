@@ -72,7 +72,7 @@ const createBook = async function (req, res) {
 
         let user = data.userId
         let userValid = await UserModel.findById({ _id: user })
-       
+
         if (!userValid) {
             return res.status(404).send({ status: false, msg: "userId doesn't exist" })
         }
@@ -110,7 +110,7 @@ const getBook = async function (req, res) {
             if (!book) {
                 return res.status(404).send({ status: false, msg: "Book not found." })
             }
-            return res.status(200).send({ status: true,total: book.length, msg: "Book List", data: book })
+            return res.status(200).send({ status: true, total: book.length, msg: "Book List", data: book })
         }
         //    only userId in params----------
         if (filter.userId != undefined && filter.category == undefined && filter.subcategory == undefined) {
@@ -239,13 +239,20 @@ const updateBook = async function (req, res) {
         if (Object.keys(body).length === 0) {
             return res.status(400).send({ status: false, msg: "Enter Data to update." })
         }
+        // if (Object.keys(req.query).length > 0) {
+        //     return res.status(400).send({ status: false, message: "please don't provide value on params " })
+        // }
         if (!isValidObjectId(bookId)) {
             res.status(400).send({ status: false, message: `${bookId} is not a valid book id` })
             return
         }
         let validBook = await BookModel.findOne({ $and: [{ _id: bookId }, { isDeleted: false }] })
-        if (!validBook) {
+        if (!validBook && null) {
             return res.status(404).send({ status: false, msg: "Book not found" })
+        }
+        if(book.userId.toString() !== userIdFromToken) {
+            res.status(403).send( { status : false , message : 'Unauthorized access ! Owner Info dosent match' } )
+            return
         }
 
         const { title, ISBN } = body;
@@ -276,8 +283,16 @@ const deleteBookById = async function (req, res) {
     try {
         let book = req.params.bookId;
 
+        if (Object.keys(req.query).length > 0) {
+            return res.status(400).send({ status: false, message: "please don't provide value on params " })
+        }
+
         if (!isValidObjectId(book)) {
             res.status(400).send({ status: false, message: `${book} is not a valid book id` })
+            return
+        }
+        if(book.userId.toString() !== userIdFromToken) {
+            res.status(403).send( { status : false , message : 'Unauthorized access ! Owner Info dosent match' } )
             return
         }
 

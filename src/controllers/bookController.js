@@ -252,7 +252,7 @@ const updateBook = async function (req, res) {
         if (!validBook && null) {
             return res.status(404).send({ status: false, msg: "Book not found" })
         }
-        if (book.userId.toString() !== userIdFromToken) {
+        if (bookId.userId.toString() !== userIdFromToken) {
             res.status(403).send({ status: false, message: 'Unauthorized access ! Owner Info dosent match' })
             return
         }
